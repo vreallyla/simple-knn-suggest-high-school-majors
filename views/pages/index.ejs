@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="get">
+        <% names.forEach(function(valname,i){ const formname = nameTable[i];  %>
+            
+            <label for="<%= valname %>"><%= formname.name %></label>
+            <% if(formname.ops) { %>
+                <select name="<%= valname %>" id="<%= valname %>">
+                    <% formname.ops.forEach(function(op,z){ %>
+
+                         <option value="<%= z %>"><%= op %></option>
+                    <% }); %>
+
+                </select>
+            <% }else{ %>
+            <input value="<%= dataQuery[valname] %>" type="<%= 'number' %>" id="<%= valname %>" name="<%= valname %>" />
+          <% }}); %>
+        <button type="submit">Check</button>
+    </form>
+
+    <%# error tag %>
+    <div>
+        <p><%= msgError %></p>
+    </div>
+
+    <%# result tag %>
+    <div>
+        <p><%= result.notice %></p>
+        <p><%= result.result %></p>
+    </div>
+</body>
+</html>
