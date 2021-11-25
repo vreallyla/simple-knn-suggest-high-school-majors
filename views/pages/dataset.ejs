@@ -4,28 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dataset</title>
+    <title>Document</title>
+    <%- include('../partials/head'); %>
 </head>
-<body>
-    <table>
-        <thead>
-        <tr>
-            <% nameTable.forEach(function(val){ %>
-                <td><%= val.name %></td>
-              <% }); %>
-        </tr>
-    </thead>
-    <tbody>
-            <% dataset.forEach(function(row){ %>
+<body class="container">
+<header>
+    <%- include('../partials/header'); %>
+</header>
+<main>
+    <div class="jumbotron">
+        <h1>Dataset</h1>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table m-0">
+                <thead>
                 <tr>
-                <% names.forEach(function(name){ %>
-                    <td><%= row[name] %></td>
-                  <% }); %>
+                    <% nameTable.forEach(function(val){ %>
+                        <td><%= val.name %></td>
+                    <% }); %>
                 </tr>
-              <% }); %>
-            </tbody>
-       
-    </table>
-    
+                </thead>
+                <tbody>
+                <% dataset.forEach(function(row){ %>
+                    <tr>
+                        <% names.forEach(function(name){ %>
+                            <td><%= row[name] %></td>
+                        <% }); %>
+                    </tr>
+                <% }); %>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</main>
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
 </body>
 </html>
