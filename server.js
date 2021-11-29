@@ -45,18 +45,7 @@ app.get("/", async function (req, res) {
       (v) => !removeColumn.includes(v) && resultValue !== v
     );
     names.forEach(async (v) => {
-      console.log(
-        v,
-      );
-
-
-      if (
-        (        namesSelection.includes(v) && !dataQuery[v]
-        ) ||
-        !keyQuery.includes(v) &&
-        resultValue !== v &&
-        !removeColumn.includes(v)
-      )
+      if (namesSelection.includes(v) && !dataQuery[v])
         msgError = "Harap isi semua Kolom";
       value.push(dataQuery[v]);
     });
