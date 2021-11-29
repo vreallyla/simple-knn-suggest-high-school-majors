@@ -16,10 +16,10 @@
         <form method="get">
             <% names.forEach(function(valname,i){ const formname = nameTable[i];  %>
             <%if(!formname.isExcept){%>
-                <div>
+        <div class="form-group">
             <label for="<%= valname %>"><%= formname.name %></label>
             <% if(formname.ops) { %>
-                <select name="<%= valname %>" id="<%= valname %>">
+                <select class="form-control" name="<%= valname %>" id="<%= valname %>">
                     <% formname.ops.forEach(function(op,z){ %>
 
                         <option value="<%= z %>"><%= op %></option>
@@ -27,10 +27,10 @@
 
                 </select>
             <% }else{ %>
-                <input step=".01" value="<%= dataQuery[valname] %>" type="<%= 'number' %>" id="<%= valname %>" name="<%= valname %>" />
+                <input class="form-control" step=".01" value="<%= dataQuery[valname] %>" type="<%= 'number' %>" id="<%= valname %>" name="<%= valname %>" />
             <% }}}); %>
         </div>
-            <button type="submit">Check</button>
+            <button class="btn btn-primary" type="submit">Check</button>
         </form>
 
         <%# error tag %>

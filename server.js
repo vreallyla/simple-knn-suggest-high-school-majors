@@ -30,7 +30,7 @@ const nameTable = [
 
 app.set("view engine", "ejs");
 
-app.use('/storages', express.static('public'))
+app.use("/storages", express.static("public"));
 
 app.get("/", async function (req, res) {
   let msgError = null;
@@ -41,11 +41,21 @@ app.get("/", async function (req, res) {
   const keyQuery = Object.keys(req.query);
 
   if (keyQuery.length > 0) {
+    const namesSelection = names.filter(
+      (v) => !removeColumn.includes(v) && resultValue !== v
+    );
     names.forEach(async (v) => {
+      console.log(
+        v,
+      );
+
+
       if (
+        (        namesSelection.includes(v) && !dataQuery[v]
+        ) ||
         !keyQuery.includes(v) &&
-        !removeColumn.includes(v) &&
-        resultValue !== v
+        resultValue !== v &&
+        !removeColumn.includes(v)
       )
         msgError = "Harap isi semua Kolom";
       value.push(dataQuery[v]);
