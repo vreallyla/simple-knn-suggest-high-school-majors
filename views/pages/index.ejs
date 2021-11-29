@@ -15,7 +15,8 @@
     <div class="jumbotron">
         <form method="get">
             <% names.forEach(function(valname,i){ const formname = nameTable[i];  %>
-
+            <%if(!formname.isExcept){%>
+                <div>
             <label for="<%= valname %>"><%= formname.name %></label>
             <% if(formname.ops) { %>
                 <select name="<%= valname %>" id="<%= valname %>">
@@ -26,8 +27,9 @@
 
                 </select>
             <% }else{ %>
-                <input value="<%= dataQuery[valname] %>" type="<%= 'number' %>" id="<%= valname %>" name="<%= valname %>" />
-            <% }}); %>
+                <input step=".01" value="<%= dataQuery[valname] %>" type="<%= 'number' %>" id="<%= valname %>" name="<%= valname %>" />
+            <% }}}); %>
+        </div>
             <button type="submit">Check</button>
         </form>
 

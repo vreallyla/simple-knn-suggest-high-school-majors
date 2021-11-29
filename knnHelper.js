@@ -1,9 +1,14 @@
 const KNN = require("ml-knn");
 const csv = require("csvtojson");
-const prompt = require("prompt");
 
-const express = require("express");
-module.exports = async function (names, csvFilePath, value) {
+module.exports = async function (
+  names,
+  csvFilePath,
+  value,
+  exceptColByKey = [],
+  resultKey = null,
+  headerExist = false
+) {
   let knn;
 
   let seperationSize; // To seperate training and test data
@@ -12,27 +17,30 @@ module.exports = async function (names, csvFilePath, value) {
     X = [],
     y = [];
 
-    let result={};
+  let result = {};
 
   let trainingSetX = [],
     trainingSetY = [],
     testSetX = [],
+    typesArray = [],
     testSetY = [];
 
-  await csv({ noheader: true, headers: names })
+  await csv({ noheader: headerExist, headers: names })
     .fromFile(csvFilePath)
     .then((jsonObj) => {
-      data = shuffleArray(jsonObj);
-
-      return dressData();
+      if (jsonObj.length) {
+        data = shuffleArray(jsonObj);
+        return dressData();
+      } else
+        return {
+          notice: "The dataset not found",
+          result: ` Result = Unknown`,
+        };
     });
 
-    return result;
-
-
+  return result;
 
   function dressData() {
-  
     /**
      * There are three different types of Iris flowers
      * that this dataset classifies.
@@ -49,32 +57,37 @@ module.exports = async function (names, csvFilePath, value) {
      */
 
     let types = new Set(); // To gather UNIQUE classes
+    let setKey = resultKey ? resultKey : Object.keys(data[0]).pop();
+    let indexKey = Object.keys(data[0]).indexOf(setKey);
+    let exceptColIndex = [];
 
     data.forEach((row) => {
-      types.add(row.type);
+      types.add(row[setKey]);
+    });
+
+    exceptColByKey.forEach((e) => {
+      exceptColIndex.push(Object.keys(data[0]).indexOf(e));
     });
 
     typesArray = [...types]; // To save the different types of classes.
-
     data.forEach((row) => {
       let rowArray, typeNumber;
-
       rowArray = Object.keys(row)
         .map((key) => parseFloat(row[key]))
-        .slice(0, 4);
-
-      typeNumber = typesArray.indexOf(row.type); // Convert type(String) to type(Number)
+        .filter((e, i) => indexKey !== i && !exceptColIndex.includes(i));
+    
+      typeNumber = typesArray.indexOf(row[setKey]); // Convert type(String) to type(Number)
 
       X.push(rowArray);
       y.push(typeNumber);
     });
 
-    trainingSetX = X.slice(0, seperationSize);
-    trainingSetY = y.slice(0, seperationSize);
-    testSetX = X.slice(seperationSize);
-    testSetY = y.slice(seperationSize);
+      trainingSetX = X.slice(0, seperationSize);
+      trainingSetY = y.slice(0, seperationSize);
+      testSetX = X.slice(seperationSize);
+      testSetY = y.slice(seperationSize);
 
-   return train();
+     return train();
   }
 
   function train() {
@@ -106,9 +119,9 @@ module.exports = async function (names, csvFilePath, value) {
       temp.push(parseFloat(v));
     });
 
-    result= {
+    result = {
       notice,
-      result: ` Result = ${knn.predict(temp)}`,
+      result: ` Result = ${typesArray[knn.predict(temp)]}`,
     };
   }
 

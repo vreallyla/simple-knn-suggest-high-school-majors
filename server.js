@@ -3,23 +3,34 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-const csvFilePath = "./iris.csv"; // Data
+const csvFilePath = "./public/shs_score.csv"; // Data
+
 const names = [
-  "sepalLength",
-  "sepalWidth",
-  "petalLength",
-  "petalWidth",
-  "type",
+  "No",
+  "NIS",
+  "NilaiRataRataRapot",
+  "NilaiRataRataUN",
+  "PlacementTest",
+  "NilaiAkhir",
+  "Minat",
 ]; // For header
+
+const removeColumn = ["No", "NIS"];
+const resultValue = "Minat";
+
 const nameTable = [
-  { name: "sepal Length" },
-  { name: "sepal Width" },
-  { name: "petal Length" },
-  { name: "petal Width" },
-  { name: "type", ops: ["Iris-setosa", "Iris-versicolor", "Iris-virginica"] },
+  { name: "No", isExcept: true },
+  { name: "NIS", isExcept: true },
+  { name: "Nilai Rata - rata Rapot" },
+  { name: "Nilai Rata - rata UN" },
+  { name: "Placement Test" },
+  { name: "Nilai Akhir" },
+  { name: "Minat", ops: ["IPA", "IPS"], isExcept: true },
 ]; // For name table
 
 app.set("view engine", "ejs");
+
+app.use('/storages', express.static('public'))
 
 app.get("/", async function (req, res) {
   let msgError = null;
@@ -31,20 +42,31 @@ app.get("/", async function (req, res) {
 
   if (keyQuery.length > 0) {
     names.forEach(async (v) => {
-      if (!keyQuery.includes(v)) msgError = "Harap isi semua Kolom";
+      if (
+        !keyQuery.includes(v) &&
+        !removeColumn.includes(v) &&
+        resultValue !== v
+      )
+        msgError = "Harap isi semua Kolom";
       value.push(dataQuery[v]);
     });
 
     if (!msgError)
-      result = await require("./knnHelper")(names, csvFilePath, value);
- 
+      result = await require("./knnHelper")(
+        names,
+        csvFilePath,
+        value,
+        removeColumn,
+        resultValue
+      );
   }
-  res.render("pages/index", { names, nameTable, msgError, dataQuery,result });
+  res.render("pages/index", { names, nameTable, msgError, dataQuery, result });
 });
 
 app.get("/dataset", function (req, res) {
-  csv({ noheader: true, headers: names })
+  csv({ noheader: false, headers: names })
     .fromFile(csvFilePath)
+
     .then((jsonObj) => {
       res.render("pages/dataset", { dataset: jsonObj, names, nameTable });
     });

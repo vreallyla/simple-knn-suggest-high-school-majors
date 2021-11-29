@@ -14,6 +14,7 @@
 <main>
     <div class="jumbotron">
         <h1>Dataset</h1>
+        <a class="btn btn-primary" href="/storages/shs_score.csv" target="_blank">Download CSV</a>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -39,6 +40,9 @@
         </div>
     </div>
 </main>
+<script>
+    var table = new DataTable("table");
+</script>
 <footer>
     <%- include('../partials/footer'); %>
 </footer>
