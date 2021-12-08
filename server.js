@@ -1,38 +1,38 @@
-const csv = require("csvtojson");
-const express = require("express");
+const csv = require('csvtojson');
+const express = require('express');
 const app = express();
 const port = 3000;
 
-const csvFilePath = "./public/shs_score.csv"; // Data
+const csvFilePath = './public/shs_score.csv'; // Data
 
 const names = [
-  "No",
-  "NIS",
-  "NilaiRataRataRapot",
-  "NilaiRataRataUN",
-  "PlacementTest",
-  "NilaiAkhir",
-  "Minat",
+  'No',
+  'NIS',
+  'NilaiRataRataRapot',
+  'NilaiRataRataUN',
+  'PlacementTest',
+  'NilaiAkhir',
+  'Minat',
 ]; // For header
 
-const removeColumn = ["No", "NIS"];
-const resultValue = "Minat";
+const removeColumn = ['No', 'NIS'];
+const resultValue = 'Minat';
 
 const nameTable = [
-  { name: "No", isExcept: true },
-  { name: "NIS", isExcept: true },
-  { name: "Nilai Rata - rata Rapot" },
-  { name: "Nilai Rata - rata UN" },
-  { name: "Placement Test" },
-  { name: "Nilai Akhir" },
-  { name: "Minat", ops: ["IPA", "IPS"], isExcept: true },
+  { name: 'No', isExcept: true },
+  { name: 'NIS', isExcept: true },
+  { name: 'Nilai Rata - rata Rapot' },
+  { name: 'Nilai Rata - rata UN' },
+  { name: 'Placement Test' },
+  { name: 'Nilai Akhir' },
+  { name: 'Minat', ops: ['IPA', 'IPS'], isExcept: true },
 ]; // For name table
 
-app.set("view engine", "ejs");
+app.set('view engine', 'ejs');
 
-app.use("/storages", express.static("public"));
+app.use('/storages', express.static('public'));
 
-app.get("/", async function (req, res) {
+app.get('/', async function (req, res) {
   let msgError = null;
   let result;
   let value = [];
@@ -46,12 +46,12 @@ app.get("/", async function (req, res) {
     );
     names.forEach(async (v) => {
       if (namesSelection.includes(v) && !dataQuery[v])
-        msgError = "Harap isi semua Kolom";
-      value.push(dataQuery[v]);
+        msgError = 'Harap isi semua Kolom';
+      if (namesSelection.includes(v)) value.push(dataQuery[v]);
     });
 
     if (!msgError)
-      result = await require("./knnHelper")(
+      result = await require('./knnHelper')(
         names,
         csvFilePath,
         value,
@@ -59,15 +59,15 @@ app.get("/", async function (req, res) {
         resultValue
       );
   }
-  res.render("pages/index", { names, nameTable, msgError, dataQuery, result });
+  res.render('pages/index', { names, nameTable, msgError, dataQuery, result });
 });
 
-app.get("/dataset", function (req, res) {
+app.get('/dataset', function (req, res) {
   csv({ noheader: false, headers: names })
     .fromFile(csvFilePath)
 
     .then((jsonObj) => {
-      res.render("pages/dataset", { dataset: jsonObj, names, nameTable });
+      res.render('pages/dataset', { dataset: jsonObj, names, nameTable });
     });
 });
 
